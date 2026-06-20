@@ -1,0 +1,9 @@
+{
+  "name": "clockstars-wc-pool",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Clockstars World Cup 2026 fantasy pool dashboard with daily auto-update via GitHub Actions",
+  "engines": {
+    "node": ">=18"
+  }
+}

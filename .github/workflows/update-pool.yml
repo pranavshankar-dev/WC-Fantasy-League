@@ -1,0 +1,45 @@
+name: Update WC fantasy pool
+
+on:
+  schedule:
+    # 9:00pm PDT daily. GitHub Actions cron is always UTC.
+    # PDT (Pacific Daylight Time, in effect June-July) is UTC-7.
+    # 9pm PDT = 04:00 UTC the following calendar day.
+    # Note: if this runs outside daylight saving (PST, UTC-8), this same
+    # cron line will fire at 8pm PST instead of 9pm PST — not relevant
+    # for the World Cup window (June-July), but worth knowing if this
+    # workflow is reused later in the year.
+    - cron: "0 4 * * *"
+  workflow_dispatch: {}  # allows manual trigger from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run update script
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: node scripts/update-pool.js
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "wc-pool-bot"
+          git config user.email "actions@github.com"
+          git add index.html
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Auto-update WC pool standings $(date -u +'%Y-%m-%d %H:%M UTC')"
+            git push
+          fi
