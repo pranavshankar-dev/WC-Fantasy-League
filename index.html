@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clockstars World Cup Fantasy Pool</title>
+<style>
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f4f3ef;
+    --bg-info: #e6f1fb;
+    --text-primary: #1a1a18;
+    --text-secondary: #5f5e5a;
+    --text-info: #0c447c;
+    --border: rgba(0,0,0,0.12);
+    --border-warning: #f0997b;
+    --bg-warning: #faece7;
+    --text-warning: #712b13;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #1c1c1a;
+      --bg-secondary: #262624;
+      --bg-info: #0c447c;
+      --text-primary: #f1efe8;
+      --text-secondary: #b4b2a9;
+      --text-info: #b5d4f4;
+      --border: rgba(255,255,255,0.15);
+      --border-warning: #d85a30;
+      --bg-warning: #4a1b0c;
+      --text-warning: #f5c4b3;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 24px 16px 64px;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 500; margin: 0; }
+  h2 { font-size: 18px; font-weight: 500; margin: 0 0 12px; }
+  .header-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem;
+  }
+  .subtle { font-size: 13px; color: var(--text-secondary); margin: 4px 0 0; }
+  button, select {
+    font-size: 13px; padding: 6px 12px; border-radius: var(--radius-md);
+    border: 0.5px solid var(--border); background: var(--bg-primary);
+    color: var(--text-primary); cursor: pointer;
+  }
+  #rules-panel {
+    display: none; background: var(--bg-secondary); border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 13px; line-height: 1.7;
+  }
+  #rules-panel table { width: 100%; border-collapse: collapse; }
+  #rules-panel td:first-child { padding: 3px 8px 3px 0; color: var(--text-secondary); white-space: nowrap; }
+  #flags {
+    background: var(--bg-warning); border-radius: var(--radius-lg);
+    padding: 0.75rem 1rem; font-size: 13px; color: var(--text-warning); margin-bottom: 1.5rem;
+  }
+  #flags div { margin: 2px 0; }
+  .lb-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .lb-rank { width: 20px; font-size: 13px; color: var(--text-secondary); text-align: right; }
+  .lb-name { width: 80px; font-size: 14px; font-weight: 500; }
+  .lb-bar-track { flex: 1; background: var(--bg-secondary); border-radius: var(--radius-md); height: 24px; position: relative; }
+  .lb-bar-fill { background: var(--bg-info); height: 100%; border-radius: var(--radius-md); }
+  .lb-pts { width: 36px; font-size: 14px; font-weight: 500; text-align: right; }
+  .picks-header { display: flex; justify-content: space-between; align-items: baseline; margin: 2rem 0 1rem; }
+  .picks-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+  .player-card {
+    background: var(--bg-primary); border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1rem 1.25rem;
+  }
+  .player-card-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .player-card-header .name { font-weight: 500; font-size: 15px; }
+  .player-card-header .pts { font-size: 18px; font-weight: 500; }
+  .section-label { font-size: 12px; color: var(--text-secondary); margin: 12px 0 2px; }
+  .team-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 0; border-top: 0.5px solid var(--border); font-size: 13px;
+  }
+  .team-row .stats { color: var(--text-secondary); display: flex; gap: 8px; }
+  .team-row .stats .pts { font-weight: 500; color: var(--text-primary); width: 28px; text-align: right; }
+  footer { text-align: center; font-size: 12px; color: var(--text-secondary); margin-top: 2rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header-row">
+    <div>
+      <h1>Clockstars WC 2026 fantasy pool</h1>
+      <p class="subtle">Group stage in progress &middot; last data refresh: <span id="last-updated">pre-tournament (seed data)</span></p>
+      <p class="subtle" style="margin-top:2px;">Covers all matches completed through this refresh. Germany vs Ivory Coast (4pm ET kickoff), Tunisia vs Japan, Spain vs Saudi Arabia, Belgium vs Iran, and New Zealand vs Egypt are not yet included.</p>
+    </div>
+    <button id="rules-toggle">Scoring rules</button>
+  </div>
+
+  <div id="rules-panel">
+    <table>
+      <tr><td>+2</td><td>per goal scored <b>by</b> a hero team</td></tr>
+      <tr><td>+2</td><td>per goal scored <b>against</b> a villain team</td></tr>
+      <tr><td>+3</td><td>per win by a hero team</td></tr>
+      <tr><td>+3</td><td>per loss by a villain team (no points for a tie)</td></tr>
+      <tr><td>+5</td><td>if a hero team survives the group stage</td></tr>
+      <tr><td>+5</td><td>if a villain team is eliminated in the group stage</td></tr>
+      <tr><td>+10</td><td>if a hero team reaches the semifinals</td></tr>
+      <tr><td>+20</td><td>if a hero team reaches the final</td></tr>
+      <tr><td>+40</td><td>if a hero team wins the World Cup</td></tr>
+    </table>
+    <p class="subtle" style="margin:10px 0 0;">Prize checkpoints: end of group stage, before semis, before the final, and after the final.</p>
+  </div>
+
+  <div id="flags"></div>
+
+  <h2>Leaderboard</h2>
+  <div id="leaderboard" style="margin-bottom:2rem;"></div>
+
+  <div class="picks-header">
+    <h2 style="margin:0;">Picks by player</h2>
+    <select id="player-filter"></select>
+  </div>
+  <div id="picks-grid" class="picks-grid"></div>
+
+  <footer>Built for the Clockstars by Claude &middot; refreshed manually by the pool admin</footer>
+</div>
+
+<script>
+// =======================================================================
+// EDITABLE DATA — update these two sections each refresh, then re-upload.
+// =======================================================================
+
+const LAST_UPDATED = "June 20, 2026, ~12:30pm PDT (3:30pm ET)";
+
+const players = [
+  { name: "Ram", heroes: ["USA","Brazil","Netherlands","Portugal"], villains: ["Iran","Curacao","Turkiye","Sweden"] },
+  { name: "Nandu", heroes: ["Brazil","Spain","Germany","France"], villains: ["Haiti","Cabo Verde","New Zealand","Tunisia"] },
+  { name: "Shankar", heroes: ["England","Germany","Sweden","Portugal"], villains: ["Australia","Mexico","Belgium","Japan"] },
+  { name: "Vibhav", heroes: ["France","Germany","Portugal","Spain"], villains: ["Morocco","Japan"] },
+  { name: "Bach", heroes: ["Germany","Portugal","France","Argentina"], villains: ["England","USA","Australia","Saudi Arabia"] },
+  { name: "Suveda", heroes: ["Argentina","Germany","Spain","France"], villains: ["New Zealand","Haiti","Cabo Verde","Ghana"] },
+  { name: "Balaji", heroes: ["Spain","France","Germany","Argentina"], villains: ["Portugal","Australia","Colombia","Paraguay"] },
+  { name: "Pranav", heroes: ["England","France","Argentina","Germany"], villains: ["Egypt","Norway","Algeria","Panama"] }
+];
+
+// teamStats: CUMULATIVE totals across all matches played so far.
+// stage values: "group" | "eliminated_group" | "r32" | "r16" | "qf" | "sf" | "final" | "champion"
+// Data as of June 20, 2026, ~12pm ET. Some groups have completed Matchday 2, others only MD1.
+const teamStats = {
+  "USA": { goalsFor: 6, goalsAgainst: 1, wins: 2, losses: 0, draws: 0, stage: "r32" },
+  "Brazil": { goalsFor: 4, goalsAgainst: 1, wins: 1, losses: 0, draws: 1, stage: "group" },
+  "Netherlands": { goalsFor: 7, goalsAgainst: 3, wins: 1, losses: 0, draws: 1, stage: "group" },
+  "Portugal": { goalsFor: 1, goalsAgainst: 1, wins: 0, losses: 0, draws: 1, stage: "group" },
+  "Iran": { goalsFor: 2, goalsAgainst: 2, wins: 0, losses: 0, draws: 1, stage: "group" },
+  "Curacao": { goalsFor: 1, goalsAgainst: 7, wins: 0, losses: 1, draws: 0, stage: "group" },
+  "Turkiye": { goalsFor: 0, goalsAgainst: 3, wins: 0, losses: 2, draws: 0, stage: "eliminated_group" },
+  "Sweden": { goalsFor: 6, goalsAgainst: 6, wins: 1, losses: 1, draws: 0, stage: "group" },
+  "Germany": { goalsFor: 7, goalsAgainst: 1, wins: 1, losses: 0, draws: 0, stage: "group" },
+  "France": { goalsFor: 3, goalsAgainst: 1, wins: 1, losses: 0, draws: 0, stage: "group" },
+  "Spain": { goalsFor: 0, goalsAgainst: 0, wins: 0, losses: 0, draws: 1, stage: "group" },
+  "Haiti": { goalsFor: 0, goalsAgainst: 4, wins: 0, losses: 2, draws: 0, stage: "eliminated_group" },
+  "Cabo Verde": { goalsFor: 0, goalsAgainst: 0, wins: 0, losses: 0, draws: 1, stage: "group" },
+  "New Zealand": { goalsFor: 2, goalsAgainst: 2, wins: 0, losses: 0, draws: 1, stage: "group" },
+  "Tunisia": { goalsFor: 1, goalsAgainst: 5, wins: 0, losses: 1, draws: 0, stage: "group" },
+  "England": { goalsFor: 4, goalsAgainst: 2, wins: 1, losses: 0, draws: 0, stage: "group" },
+  "Australia": { goalsFor: 2, goalsAgainst: 2, wins: 1, losses: 1, draws: 0, stage: "group" },
+  "Mexico": { goalsFor: 3, goalsAgainst: 0, wins: 2, losses: 0, draws: 0, stage: "r32" },
+  "Belgium": { goalsFor: 1, goalsAgainst: 1, wins: 0, losses: 0, draws: 1, stage: "group" },
+  "Japan": { goalsFor: 2, goalsAgainst: 2, wins: 0, losses: 0, draws: 1, stage: "group" },
+  "Morocco": { goalsFor: 2, goalsAgainst: 2, wins: 0, losses: 0, draws: 1, stage: "group" },
+  "Argentina": { goalsFor: 3, goalsAgainst: 0, wins: 1, losses: 0, draws: 0, stage: "group" },
+  "Colombia": { goalsFor: 3, goalsAgainst: 1, wins: 1, losses: 0, draws: 0, stage: "group" },
+  "Paraguay": { goalsFor: 2, goalsAgainst: 4, wins: 1, losses: 1, draws: 0, stage: "group" },
+  "Ghana": { goalsFor: 1, goalsAgainst: 0, wins: 1, losses: 0, draws: 0, stage: "group" },
+  "Saudi Arabia": { goalsFor: 1, goalsAgainst: 1, wins: 0, losses: 0, draws: 1, stage: "group" },
+  "Senegal": { goalsFor: 1, goalsAgainst: 3, wins: 0, losses: 1, draws: 0, stage: "group" },
+  "Iraq": { goalsFor: 1, goalsAgainst: 4, wins: 0, losses: 1, draws: 0, stage: "group" },
+  "Croatia": { goalsFor: 2, goalsAgainst: 4, wins: 0, losses: 1, draws: 0, stage: "group" },
+  "Panama": { goalsFor: 0, goalsAgainst: 1, wins: 0, losses: 1, draws: 0, stage: "group" },
+  "Egypt": { goalsFor: 1, goalsAgainst: 1, wins: 0, losses: 0, draws: 1, stage: "group" },
+  "Algeria": { goalsFor: 0, goalsAgainst: 3, wins: 0, losses: 1, draws: 0, stage: "group" },
+  "Norway": { goalsFor: 4, goalsAgainst: 1, wins: 1, losses: 0, draws: 0, stage: "group" }
+};
+
+// =======================================================================
+// SCORING LOGIC — no need to touch this on refresh.
+// =======================================================================
+
+function stageRank(stage) {
+  return ["group","eliminated_group","r32","r16","qf","sf","final","champion"].indexOf(stage);
+}
+function scoreHero(team) {
+  const s = teamStats[team];
+  if (!s) return 0;
+  let pts = s.goalsFor * 2 + s.wins * 3;
+  const r = stageRank(s.stage);
+  if (r >= stageRank("r16")) pts += 5;
+  if (r >= stageRank("sf")) pts += 10;
+  if (r >= stageRank("final")) pts += 20;
+  if (r >= stageRank("champion")) pts += 40;
+  return pts;
+}
+function scoreVillain(team) {
+  const s = teamStats[team];
+  if (!s) return 0;
+  let pts = s.goalsAgainst * 2 + s.losses * 3;
+  if (s.stage === "eliminated_group") pts += 5;
+  return pts;
+}
+function totalFor(player) {
+  return player.heroes.reduce((a,t)=>a+scoreHero(t),0) + player.villains.reduce((a,t)=>a+scoreVillain(t),0);
+}
+
+function renderFlags() {
+  const notes = players.filter(p => p.note);
+  const el = document.getElementById('flags');
+  if (!notes.length) { el.style.display = 'none'; return; }
+  el.innerHTML = notes.map(p => `<div><b>${p.name}:</b> ${p.note}</div>`).join('');
+}
+
+function renderLeaderboard() {
+  const ranked = players.map(p => ({ name: p.name, pts: totalFor(p) })).sort((a,b)=>b.pts-a.pts);
+  const max = Math.max(...ranked.map(r=>r.pts), 1);
+  document.getElementById('leaderboard').innerHTML = ranked.map((r,i) => `
+    <div class="lb-row">
+      <div class="lb-rank">${i+1}</div>
+      <div class="lb-name">${r.name}</div>
+      <div class="lb-bar-track"><div class="lb-bar-fill" style="width:${(r.pts/max*100).toFixed(0)}%;"></div></div>
+      <div class="lb-pts">${r.pts}</div>
+    </div>`).join('');
+}
+
+function teamRow(team, isHero) {
+  const s = teamStats[team] || { goalsFor:0, goalsAgainst:0, wins:0, losses:0, draws:0, stage:"group" };
+  const pts = isHero ? scoreHero(team) : scoreVillain(team);
+  const record = `${s.wins}W ${s.draws}D ${s.losses}L`;
+  const goals = isHero ? `${s.goalsFor} GF` : `${s.goalsAgainst} GA`;
+  return `<div class="team-row">
+    <span>${team}</span>
+    <span class="stats"><span>${record}</span><span>${goals}</span><span class="pts">${pts}</span></span>
+  </div>`;
+}
+
+function renderPicks(filter) {
+  const list = filter === "all" ? players : players.filter(p => p.name === filter);
+  document.getElementById('picks-grid').innerHTML = list.map(p => `
+    <div class="player-card">
+      <div class="player-card-header">
+        <span class="name">${p.name}</span>
+        <span class="pts">${totalFor(p)} pts</span>
+      </div>
+      <p class="section-label">Heroes</p>
+      ${p.heroes.map(t=>teamRow(t,true)).join('')}
+      <p class="section-label">Villains</p>
+      ${p.villains.map(t=>teamRow(t,false)).join('')}
+    </div>`).join('');
+}
+
+document.getElementById('last-updated').textContent = LAST_UPDATED;
+
+const filterSelect = document.getElementById('player-filter');
+filterSelect.innerHTML = '<option value="all">All players</option>' + players.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');
+filterSelect.addEventListener('change', e => renderPicks(e.target.value));
+
+document.getElementById('rules-toggle').addEventListener('click', () => {
+  const panel = document.getElementById('rules-panel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+});
+
+renderFlags();
+renderLeaderboard();
+renderPicks("all");
+</script>
+</body>
+</html>
