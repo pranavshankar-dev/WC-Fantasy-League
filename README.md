@@ -1,4 +1,4 @@
-# Clockstars WC 2026 fantasy pool
+# WC 2026 fantasy pool
 
 A self-updating dashboard for the Clockstars World Cup fantasy pool.
 
