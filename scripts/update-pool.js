@@ -41,7 +41,10 @@ const NAME_MAP = {
   "Türkiye": "Turkiye",
   "Curaçao": "Curacao",
   "Cabo Verde": "Cabo Verde",
-  "Korea, South": "South Korea"
+  "Korea, South": "South Korea",
+  "Cape Verde Islands": "Cabo Verde",
+  "Congo DR": "DR Congo",
+  "Turkey": "Turkiye"
 };
 
 function normalizeTeamName(apiName) {
@@ -207,6 +210,34 @@ function markGroupEliminations(matches, stats) {
 }
 
 // ---------------------------------------------------------------------
+// Find the single next scheduled (not yet played) match, tournament-wide,
+// so the dashboard's "coming up" note can update itself automatically
+// instead of relying on hand-typed text that goes stale.
+// ---------------------------------------------------------------------
+function findNextFixture(matches) {
+  const upcoming = matches
+    .filter((m) => m.status === "SCHEDULED" || m.status === "TIMED")
+    .filter((m) => m.utcDate)
+    .sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
+
+  if (!upcoming.length) return null;
+
+  const next = upcoming[0];
+  const home = normalizeTeamName(next.homeTeam.name);
+  const away = normalizeTeamName(next.awayTeam.name);
+  const kickoff = new Date(next.utcDate);
+  const kickoffStr = kickoff.toLocaleString("en-US", {
+    timeZone: "America/New_York",
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  });
+  return `${home} vs ${away} (${kickoffStr} ET)`;
+}
+
+// ---------------------------------------------------------------------
 // Scoring logic — identical to the dashboard's in-browser logic.
 // ---------------------------------------------------------------------
 function scoreHero(stats, team) {
@@ -240,7 +271,7 @@ function buildTeamStatsBlock(stats) {
   return `const teamStats = {\n${lines.join(",\n")}\n};`;
 }
 
-function updateIndexHtml(stats) {
+function updateIndexHtml(stats, matches) {
   let html = fs.readFileSync(INDEX_PATH, "utf8");
 
   const newBlock = buildTeamStatsBlock(stats);
@@ -255,6 +286,19 @@ function updateIndexHtml(stats) {
   html = html.replace(
     /const LAST_UPDATED = ".*?";/,
     `const LAST_UPDATED = "${stamp} ET (auto-updated)";`
+  );
+
+  // Replace the hand-typed "not yet included" disclaimer with a
+  // self-updating note naming the actual next unplayed match. Matches
+  // the <p class="subtle" style="margin-top:2px;">...</p> line in the
+  // HTML body (NOT the inline JS comment of the same name).
+  const nextFixture = findNextFixture(matches);
+  const newNote = nextFixture
+    ? `Covers all matches completed through this refresh. Next up: ${nextFixture}.`
+    : `Covers all matches completed through this refresh.`;
+  html = html.replace(
+    /<p class="subtle" style="margin-top:2px;">[\s\S]*?<\/p>/,
+    `<p class="subtle" style="margin-top:2px;">${newNote}</p>`
   );
 
   fs.writeFileSync(INDEX_PATH, html, "utf8");
@@ -281,7 +325,7 @@ function updateIndexHtml(stats) {
     }
   }
 
-  updateIndexHtml(stats);
+  updateIndexHtml(stats, matches);
 
   console.log("\n=== Player totals ===");
   for (const p of players) {
