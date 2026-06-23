@@ -98,7 +98,7 @@
     <div>
       <h1>WC 2026 fantasy pool</h1>
       <p class="subtle">Group stage in progress &middot; last data refresh: <span id="last-updated">pre-tournament (seed data)</span></p>
-      <p class="subtle" style="margin-top:2px;">Covers all matches completed through this refresh. Next up: Argentina vs Austria (Mon, Jun 22, 1:00 PM ET).</p>
+      <p class="subtle" style="margin-top:2px;">Covers all matches completed through this refresh. Next up: Portugal vs Uzbekistan (Tue, Jun 23, 1:00 PM ET).</p>
     </div>
     <button id="rules-toggle">Scoring rules</button>
   </div>
@@ -137,7 +137,7 @@
 // EDITABLE DATA — update these two sections each refresh, then re-upload.
 // =======================================================================
 
-const LAST_UPDATED = "Jun 22, 2026, 5:44 AM ET (auto-updated)";
+const LAST_UPDATED = "Jun 23, 2026, 3:43 AM ET (auto-updated)";
 
 const players = [
   { name: "Ram", heroes: ["USA","Brazil","Netherlands","Portugal"], villains: ["Iran","Curacao","Turkiye","Sweden"] },
@@ -154,10 +154,10 @@ const players = [
 // stage values: "group" | "eliminated_group" | "r32" | "r16" | "qf" | "sf" | "final" | "champion"
 // Data as of June 20, 2026, ~12pm ET. Some groups have completed Matchday 2, others only MD1.
 const teamStats = {
-  "Algeria": { goalsFor: 0, goalsAgainst: 3, wins: 0, losses: 1, draws: 0, stage: "group" },
-  "Argentina": { goalsFor: 3, goalsAgainst: 0, wins: 1, losses: 0, draws: 0, stage: "group" },
+  "Algeria": { goalsFor: 2, goalsAgainst: 4, wins: 1, losses: 1, draws: 0, stage: "group" },
+  "Argentina": { goalsFor: 5, goalsAgainst: 0, wins: 2, losses: 0, draws: 0, stage: "group" },
   "Australia": { goalsFor: 2, goalsAgainst: 2, wins: 1, losses: 1, draws: 0, stage: "group" },
-  "Austria": { goalsFor: 3, goalsAgainst: 1, wins: 1, losses: 0, draws: 0, stage: "group" },
+  "Austria": { goalsFor: 3, goalsAgainst: 3, wins: 1, losses: 1, draws: 0, stage: "group" },
   "Belgium": { goalsFor: 1, goalsAgainst: 1, wins: 0, losses: 0, draws: 2, stage: "group" },
   "Bosnia-Herzegovina": { goalsFor: 2, goalsAgainst: 5, wins: 0, losses: 1, draws: 1, stage: "group" },
   "Brazil": { goalsFor: 4, goalsAgainst: 1, wins: 1, losses: 0, draws: 1, stage: "group" },
@@ -171,27 +171,27 @@ const teamStats = {
   "Ecuador": { goalsFor: 0, goalsAgainst: 1, wins: 0, losses: 1, draws: 1, stage: "group" },
   "Egypt": { goalsFor: 4, goalsAgainst: 2, wins: 1, losses: 0, draws: 1, stage: "group" },
   "England": { goalsFor: 4, goalsAgainst: 2, wins: 1, losses: 0, draws: 0, stage: "group" },
-  "France": { goalsFor: 3, goalsAgainst: 1, wins: 1, losses: 0, draws: 0, stage: "group" },
+  "France": { goalsFor: 6, goalsAgainst: 1, wins: 2, losses: 0, draws: 0, stage: "group" },
   "Germany": { goalsFor: 9, goalsAgainst: 2, wins: 2, losses: 0, draws: 0, stage: "group" },
   "Ghana": { goalsFor: 1, goalsAgainst: 0, wins: 1, losses: 0, draws: 0, stage: "group" },
   "Haiti": { goalsFor: 0, goalsAgainst: 4, wins: 0, losses: 2, draws: 0, stage: "group" },
   "Iran": { goalsFor: 2, goalsAgainst: 2, wins: 0, losses: 0, draws: 2, stage: "group" },
-  "Iraq": { goalsFor: 1, goalsAgainst: 4, wins: 0, losses: 1, draws: 0, stage: "group" },
+  "Iraq": { goalsFor: 1, goalsAgainst: 7, wins: 0, losses: 2, draws: 0, stage: "group" },
   "Ivory Coast": { goalsFor: 2, goalsAgainst: 2, wins: 1, losses: 1, draws: 0, stage: "group" },
   "Japan": { goalsFor: 6, goalsAgainst: 2, wins: 1, losses: 0, draws: 1, stage: "group" },
-  "Jordan": { goalsFor: 1, goalsAgainst: 3, wins: 0, losses: 1, draws: 0, stage: "group" },
+  "Jordan": { goalsFor: 2, goalsAgainst: 5, wins: 0, losses: 2, draws: 0, stage: "group" },
   "Mexico": { goalsFor: 3, goalsAgainst: 0, wins: 2, losses: 0, draws: 0, stage: "group" },
   "Morocco": { goalsFor: 2, goalsAgainst: 1, wins: 1, losses: 0, draws: 1, stage: "group" },
   "Netherlands": { goalsFor: 7, goalsAgainst: 3, wins: 1, losses: 0, draws: 1, stage: "group" },
   "New Zealand": { goalsFor: 3, goalsAgainst: 5, wins: 0, losses: 1, draws: 1, stage: "group" },
-  "Norway": { goalsFor: 4, goalsAgainst: 1, wins: 1, losses: 0, draws: 0, stage: "group" },
+  "Norway": { goalsFor: 7, goalsAgainst: 3, wins: 2, losses: 0, draws: 0, stage: "group" },
   "Panama": { goalsFor: 0, goalsAgainst: 1, wins: 0, losses: 1, draws: 0, stage: "group" },
   "Paraguay": { goalsFor: 2, goalsAgainst: 4, wins: 1, losses: 1, draws: 0, stage: "group" },
   "Portugal": { goalsFor: 1, goalsAgainst: 1, wins: 0, losses: 0, draws: 1, stage: "group" },
   "Qatar": { goalsFor: 1, goalsAgainst: 7, wins: 0, losses: 1, draws: 1, stage: "group" },
   "Saudi Arabia": { goalsFor: 1, goalsAgainst: 5, wins: 0, losses: 1, draws: 1, stage: "group" },
   "Scotland": { goalsFor: 1, goalsAgainst: 1, wins: 1, losses: 1, draws: 0, stage: "group" },
-  "Senegal": { goalsFor: 1, goalsAgainst: 3, wins: 0, losses: 1, draws: 0, stage: "group" },
+  "Senegal": { goalsFor: 3, goalsAgainst: 6, wins: 0, losses: 2, draws: 0, stage: "group" },
   "South Africa": { goalsFor: 1, goalsAgainst: 3, wins: 0, losses: 1, draws: 1, stage: "group" },
   "South Korea": { goalsFor: 2, goalsAgainst: 2, wins: 1, losses: 1, draws: 0, stage: "group" },
   "Spain": { goalsFor: 4, goalsAgainst: 0, wins: 1, losses: 0, draws: 1, stage: "group" },
