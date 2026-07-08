@@ -98,7 +98,7 @@
     <div>
       <h1>WC 2026 fantasy pool</h1>
       <p class="subtle">Group stage in progress &middot; last data refresh: <span id="last-updated">pre-tournament (seed data)</span></p>
-      <p class="subtle" style="margin-top:2px;">Covers all matches completed through this refresh. Next up: Argentina vs Egypt (Tue, Jul 7, 12:00 PM ET).</p>
+      <p class="subtle" style="margin-top:2px;">Covers all matches completed through this refresh. Next up: France vs Morocco (Thu, Jul 9, 4:00 PM ET).</p>
     </div>
     <button id="rules-toggle">Scoring rules</button>
   </div>
@@ -137,7 +137,7 @@
 // EDITABLE DATA — update these two sections each refresh, then re-upload.
 // =======================================================================
 
-const LAST_UPDATED = "Jul 7, 2026, 3:33 AM ET (auto-updated)";
+const LAST_UPDATED = "Jul 8, 2026, 2:24 AM ET (auto-updated)";
 
 const players = [
   { name: "Ram", heroes: ["USA","Brazil","Netherlands","Portugal"], villains: ["Iran","Curacao","Turkiye","Sweden"] },
@@ -155,7 +155,7 @@ const players = [
 // Data as of June 20, 2026, ~12pm ET. Some groups have completed Matchday 2, others only MD1.
 const teamStats = {
   "Algeria": { goalsFor: 5, goalsAgainst: 9, wins: 1, losses: 2, draws: 1, stage: "eliminated_group" },
-  "Argentina": { goalsFor: 11, goalsAgainst: 3, wins: 4, losses: 0, draws: 0, stage: "r32" },
+  "Argentina": { goalsFor: 14, goalsAgainst: 5, wins: 5, losses: 0, draws: 0, stage: "r16" },
   "Australia": { goalsFor: 5, goalsAgainst: 7, wins: 1, losses: 2, draws: 1, stage: "eliminated_group" },
   "Austria": { goalsFor: 6, goalsAgainst: 9, wins: 1, losses: 2, draws: 1, stage: "r32" },
   "Belgium": { goalsFor: 13, goalsAgainst: 5, wins: 3, losses: 0, draws: 2, stage: "r16" },
@@ -163,13 +163,13 @@ const teamStats = {
   "Brazil": { goalsFor: 10, goalsAgainst: 4, wins: 3, losses: 1, draws: 1, stage: "r32" },
   "Cabo Verde": { goalsFor: 4, goalsAgainst: 5, wins: 0, losses: 1, draws: 3, stage: "r32" },
   "Canada": { goalsFor: 9, goalsAgainst: 6, wins: 2, losses: 2, draws: 1, stage: "r32" },
-  "Colombia": { goalsFor: 5, goalsAgainst: 1, wins: 3, losses: 0, draws: 1, stage: "r32" },
+  "Colombia": { goalsFor: 8, goalsAgainst: 5, wins: 3, losses: 1, draws: 1, stage: "r32" },
   "Croatia": { goalsFor: 6, goalsAgainst: 7, wins: 2, losses: 2, draws: 0, stage: "r32" },
   "Curacao": { goalsFor: 1, goalsAgainst: 9, wins: 0, losses: 2, draws: 1, stage: "eliminated_group" },
   "Czechia": { goalsFor: 2, goalsAgainst: 6, wins: 0, losses: 2, draws: 1, stage: "eliminated_group" },
   "DR Congo": { goalsFor: 5, goalsAgainst: 5, wins: 1, losses: 2, draws: 1, stage: "eliminated_group" },
   "Ecuador": { goalsFor: 2, goalsAgainst: 4, wins: 1, losses: 2, draws: 1, stage: "eliminated_group" },
-  "Egypt": { goalsFor: 10, goalsAgainst: 6, wins: 2, losses: 0, draws: 2, stage: "r32" },
+  "Egypt": { goalsFor: 12, goalsAgainst: 9, wins: 2, losses: 1, draws: 2, stage: "r32" },
   "England": { goalsFor: 11, goalsAgainst: 5, wins: 4, losses: 0, draws: 1, stage: "r16" },
   "France": { goalsFor: 14, goalsAgainst: 2, wins: 5, losses: 0, draws: 0, stage: "r16" },
   "Germany": { goalsFor: 14, goalsAgainst: 9, wins: 2, losses: 2, draws: 0, stage: "r32" },
@@ -196,7 +196,7 @@ const teamStats = {
   "South Korea": { goalsFor: 2, goalsAgainst: 3, wins: 1, losses: 2, draws: 0, stage: "eliminated_group" },
   "Spain": { goalsFor: 9, goalsAgainst: 0, wins: 4, losses: 0, draws: 1, stage: "r16" },
   "Sweden": { goalsFor: 7, goalsAgainst: 10, wins: 1, losses: 2, draws: 1, stage: "eliminated_group" },
-  "Switzerland": { goalsFor: 9, goalsAgainst: 3, wins: 3, losses: 0, draws: 1, stage: "r32" },
+  "Switzerland": { goalsFor: 13, goalsAgainst: 6, wins: 4, losses: 0, draws: 1, stage: "r16" },
   "Tunisia": { goalsFor: 2, goalsAgainst: 12, wins: 0, losses: 3, draws: 0, stage: "eliminated_group" },
   "Turkiye": { goalsFor: 3, goalsAgainst: 5, wins: 1, losses: 2, draws: 0, stage: "eliminated_group" },
   "Uruguay": { goalsFor: 3, goalsAgainst: 4, wins: 0, losses: 1, draws: 2, stage: "eliminated_group" },
